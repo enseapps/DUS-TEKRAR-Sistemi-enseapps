@@ -3,15 +3,10 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="theme-color" content="#667eea">
-    <title>🦷 DUS Tekrar Sistemi</title>
+    <title>🦷 DUS Tekrar - Kalıcı</title>
     <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        
         body {
             font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
             background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
@@ -20,10 +15,7 @@
             padding-bottom: 80px;
         }
 
-        .container {
-            max-width: 800px;
-            margin: 0 auto;
-        }
+        .container { max-width: 800px; margin: 0 auto; }
 
         .header {
             background: white;
@@ -40,6 +32,45 @@
             margin-bottom: 5px;
         }
 
+        .data-status {
+            background: #d1fae5;
+            border: 2px solid #10b981;
+            border-radius: 12px;
+            padding: 12px;
+            margin-top: 15px;
+            color: #065f46;
+            font-size: 0.9em;
+        }
+
+        .data-status strong {
+            display: block;
+            margin-bottom: 5px;
+        }
+
+        .stats {
+            display: flex;
+            gap: 10px;
+            margin-top: 15px;
+            justify-content: center;
+        }
+
+        .stat {
+            background: #f8fafc;
+            padding: 10px 15px;
+            border-radius: 10px;
+        }
+
+        .stat-number {
+            font-size: 1.5em;
+            font-weight: 700;
+            color: #667eea;
+        }
+
+        .stat-label {
+            font-size: 0.8em;
+            color: #64748b;
+        }
+
         .card {
             background: white;
             border-radius: 16px;
@@ -48,15 +79,13 @@
             box-shadow: 0 4px 15px rgba(0,0,0,0.1);
         }
 
-        .card h2 {
-            font-size: 1.3em;
-            color: #1e293b;
-            margin-bottom: 15px;
+        .card h2 { 
+            font-size: 1.3em; 
+            color: #1e293b; 
+            margin-bottom: 15px; 
         }
 
-        .form-group {
-            margin-bottom: 15px;
-        }
+        .form-group { margin-bottom: 15px; }
 
         label {
             display: block;
@@ -87,29 +116,35 @@
             font-size: 17px;
             font-weight: 700;
             cursor: pointer;
+            color: white;
+            margin-bottom: 10px;
             display: flex;
             align-items: center;
             justify-content: center;
             gap: 8px;
-            color: white;
+        }
+
+        .btn-primary {
             background: linear-gradient(135deg, #10b981, #059669);
-            box-shadow: 0 4px 15px rgba(16, 185, 129, 0.3);
-            animation: pulse 2s infinite;
         }
 
-        @keyframes pulse {
-            0%, 100% { transform: scale(1); }
-            50% { transform: scale(1.02); }
+        .btn-secondary {
+            background: linear-gradient(135deg, #667eea, #764ba2);
         }
 
-        .alert {
-            background: #dbeafe;
-            border: 2px solid #3b82f6;
+        .btn-small {
+            padding: 10px 16px;
+            font-size: 0.9em;
+            width: auto;
+        }
+
+        .backup-alert {
+            background: #fef3c7;
+            border: 2px solid #f59e0b;
             border-radius: 12px;
             padding: 15px;
             margin: 15px 0;
-            color: #1e40af;
-            line-height: 1.6;
+            color: #92400e;
         }
 
         .topic-card {
@@ -118,12 +153,6 @@
             padding: 15px;
             margin-bottom: 12px;
             border-left: 5px solid #667eea;
-        }
-
-        .topic-title {
-            font-weight: 700;
-            color: #1e293b;
-            margin-bottom: 10px;
         }
 
         .badge {
@@ -167,7 +196,7 @@
 
         .toast {
             position: fixed;
-            bottom: 20px;
+            bottom: 90px;
             left: 50%;
             transform: translateX(-50%);
             background: #1e293b;
@@ -178,10 +207,35 @@
             z-index: 10000;
         }
 
-        @media (max-width: 600px) {
-            .dates-grid {
-                grid-template-columns: 1fr;
-            }
+        .bottom-nav {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: white;
+            box-shadow: 0 -4px 20px rgba(0,0,0,0.1);
+            padding: 10px;
+            display: flex;
+            justify-content: space-around;
+            z-index: 1000;
+        }
+
+        .nav-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 4px;
+            padding: 8px 16px;
+            border-radius: 12px;
+            cursor: pointer;
+            color: #64748b;
+            font-size: 0.75em;
+            font-weight: 600;
+        }
+
+        .nav-item.active {
+            background: #f8fafc;
+            color: #667eea;
         }
     </style>
 </head>
@@ -189,21 +243,32 @@
     <div class="container">
         <div class="header">
             <h1>🦷 DUS Tekrar Sistemi</h1>
-            <p style="color: #64748b;">Otomatik Takvim Entegrasyonu</p>
+            <p style="color: #64748b;">Verileriniz Güvende ve Kalıcı</p>
+            
+            <div class="data-status">
+                <strong>💾 Veri Durumu</strong>
+                <div id="dataStatus">Yükleniyor...</div>
+            </div>
+
+            <div class="stats">
+                <div class="stat">
+                    <div class="stat-number" id="totalTopics">0</div>
+                    <div class="stat-label">Toplam Konu</div>
+                </div>
+                <div class="stat">
+                    <div class="stat-number" id="daysSince">0</div>
+                    <div class="stat-label">Gün Önce</div>
+                </div>
+                <div class="stat">
+                    <div class="stat-number" id="storageUsed">0</div>
+                    <div class="stat-label">KB Kullanım</div>
+                </div>
+            </div>
         </div>
 
         <div class="card">
             <h2>➕ Yeni Konu Ekle</h2>
             
-            <div class="alert">
-                <strong>📅 Nasıl Çalışır?</strong><br>
-                1. Konu bilgilerini girin<br>
-                2. "İndir ve Takvime Ekle" butonuna basın<br>
-                3. İndirilen dosyaya tıklayın<br>
-                4. Google Calendar otomatik açılır → "Kaydet" deyin<br>
-                5. 4 etkinlik (1-3-7-30 gün) takvime eklenir! 🎉
-            </div>
-
             <form id="topicForm">
                 <div class="form-group">
                     <label>📚 Ders</label>
@@ -228,31 +293,45 @@
 
                 <div class="form-group">
                     <label>📖 Konu</label>
-                    <input type="text" id="topicName" placeholder="Örn: Diş Anatomisi - Kesici Dişler" required>
+                    <input type="text" id="topicName" placeholder="Örn: Diş Anatomisi" required>
                 </div>
 
                 <div class="form-group">
                     <label>📝 Notlar</label>
-                    <textarea id="notes" rows="3" placeholder="Önemli notlar..."></textarea>
+                    <textarea id="notes" rows="3" placeholder="Notlar..."></textarea>
                 </div>
 
-                <button type="submit" class="btn">
-                    📥 İndir ve Google Takvime Ekle (4 Etkinlik)
+                <button type="submit" class="btn btn-primary">
+                    📥 Ekle ve Takvime Kaydet
                 </button>
             </form>
         </div>
 
+        <div class="card" id="backupCard" style="display: none;">
+            <div class="backup-alert">
+                <strong>⚠️ Yedekleme Önerisi</strong>
+                <p style="margin: 10px 0;">Son yedeğinizden bu yana <span id="backupDays">0</span> gün geçti. Verilerinizi yedeklemenizi öneririz.</p>
+                <button class="btn btn-secondary btn-small" onclick="manualBackup()">
+                    💾 Şimdi Yedekle
+                </button>
+            </div>
+        </div>
+
         <div class="card">
-            <h2>📚 Eklenen Konular</h2>
+            <h2>📚 Konularım</h2>
             <div id="topicsList"></div>
         </div>
     </div>
 
+    <div class="bottom-nav">
+        <div class="nav-item active">
+            <div style="font-size: 1.5em;">📚</div>
+            <div>Konular</div>
+        </div>
+    </div>
+
     <script>
-        const APP = {
-            topics: [],
-            SCHEDULE: [1, 3, 7, 30]
-        };
+        const APP = { topics: [], SCHEDULE: [1, 3, 7, 30] };
 
         const CATEGORIES = {
             'anatomi': '🦴 Anatomi',
@@ -286,76 +365,41 @@
         }
 
         function toICSDate(date) {
-            const d = new Date(date);
-            return d.toISOString().replace(/[-:]/g, '').split('.')[0] + 'Z';
+            return new Date(date).toISOString().replace(/[-:]/g, '').split('.')[0] + 'Z';
         }
 
         function createICS(topic) {
-            let ics = 'BEGIN:VCALENDAR\r\n';
-            ics += 'VERSION:2.0\r\n';
-            ics += 'PRODID:-//DUS Tekrar Sistemi//TR\r\n';
-            ics += 'CALSCALE:GREGORIAN\r\n';
-            ics += 'METHOD:PUBLISH\r\n';
-            ics += `X-WR-CALNAME:${CATEGORIES[topic.category]}\r\n`;
-            ics += 'X-WR-TIMEZONE:Europe/Istanbul\r\n';
-
-            topic.repetitions.forEach((rep, index) => {
-                const startDate = new Date(rep.date);
-                const endDate = addDays(startDate, 0);
-                
+            let ics = 'BEGIN:VCALENDAR\r\nVERSION:2.0\r\nPRODID:-//DUS//TR\r\n';
+            topic.repetitions.forEach(rep => {
+                const d = new Date(rep.date);
                 ics += 'BEGIN:VEVENT\r\n';
-                ics += `UID:${topic.id}-${rep.day}@dustekrar.com\r\n`;
-                ics += `DTSTAMP:${toICSDate(new Date())}\r\n`;
-                ics += `DTSTART:${toICSDate(startDate)}\r\n`;
-                ics += `DTEND:${toICSDate(endDate)}\r\n`;
+                ics += `UID:${topic.id}-${rep.day}@dus.com\r\n`;
+                ics += `DTSTART:${toICSDate(d)}\r\n`;
+                ics += `DTEND:${toICSDate(addDays(d, 0))}\r\n`;
                 ics += `SUMMARY:${CATEGORIES[topic.category]} - ${topic.name} (${rep.day}. gün)\r\n`;
-                
-                const description = `🦷 DUS Diş Hekimliği - ${rep.day}. Gün Tekrarı\\n\\n` +
-                                  `📚 Ders: ${CATEGORIES[topic.category]}\\n` +
-                                  `📖 Konu: ${topic.name}\\n` +
-                                  `📅 ${rep.day}. Gün (1-3-7-30 Sistemi)\\n\\n` +
-                                  `${topic.notes ? `📝 Notlar: ${topic.notes}\\n\\n` : ''}` +
-                                  `Tüm Tekrarlar:\\n` +
-                                  `${topic.repetitions.map(r => `• ${r.day}. gün: ${formatDate(r.date)}`).join('\\n')}`;
-                
-                ics += `DESCRIPTION:${description}\r\n`;
-                ics += `LOCATION:DUS Çalışma\r\n`;
-                ics += 'STATUS:CONFIRMED\r\n';
-                ics += 'BEGIN:VALARM\r\n';
-                ics += 'TRIGGER:-PT2H\r\n';
-                ics += 'ACTION:DISPLAY\r\n';
-                ics += `DESCRIPTION:${topic.name} - ${rep.day}. gün tekrarı 2 saat sonra\r\n`;
-                ics += 'END:VALARM\r\n';
-                ics += 'BEGIN:VALARM\r\n';
-                ics += 'TRIGGER:-PT30M\r\n';
-                ics += 'ACTION:DISPLAY\r\n';
-                ics += `DESCRIPTION:${topic.name} - ${rep.day}. gün tekrarı 30 dakika sonra\r\n`;
-                ics += 'END:VALARM\r\n';
+                ics += `DESCRIPTION:${topic.notes || ''}\r\n`;
+                ics += 'BEGIN:VALARM\r\nTRIGGER:-PT2H\r\nACTION:DISPLAY\r\nEND:VALARM\r\n';
                 ics += 'END:VEVENT\r\n';
             });
-
             ics += 'END:VCALENDAR\r\n';
             return ics;
         }
 
         function downloadICS(topic) {
             const ics = createICS(topic);
-            const blob = new Blob([ics], { type: 'text/calendar;charset=utf-8' });
+            const blob = new Blob([ics], { type: 'text/calendar' });
             const link = document.createElement('a');
             link.href = URL.createObjectURL(blob);
-            link.download = `${topic.name.replace(/[^a-z0-9]/gi, '_').toLowerCase()}.ics`;
+            link.download = `${topic.name.replace(/\W/g, '_')}.ics`;
             link.click();
-            
-            showToast('📥 İndirildi! Dosyaya tıklayın, Google Calendar açılacak!');
+            showToast('📥 Takvim indirildi!');
         }
 
         function createTopic(name, category, notes) {
             const now = new Date();
             return {
                 id: Date.now(),
-                name,
-                category,
-                notes,
+                name, category, notes,
                 createdAt: now.toISOString(),
                 repetitions: APP.SCHEDULE.map(days => ({
                     day: days,
@@ -366,46 +410,91 @@
 
         function saveData() {
             localStorage.setItem('dusDis', JSON.stringify(APP.topics));
+            localStorage.setItem('dusDis_lastSave', Date.now());
+            updateDataStatus();
         }
 
         function loadData() {
             const saved = localStorage.getItem('dusDis');
             if (saved) APP.topics = JSON.parse(saved);
+            updateDataStatus();
+            checkBackupReminder();
+        }
+
+        function updateDataStatus() {
+            const lastSave = localStorage.getItem('dusDis_lastSave');
+            const size = new Blob([JSON.stringify(APP.topics)]).size;
+            
+            document.getElementById('totalTopics').textContent = APP.topics.length;
+            document.getElementById('storageUsed').textContent = Math.round(size / 1024);
+            
+            if (lastSave) {
+                const days = Math.floor((Date.now() - parseInt(lastSave)) / (1000 * 60 * 60 * 24));
+                document.getElementById('daysSince').textContent = days;
+                
+                const lastDate = new Date(parseInt(lastSave));
+                document.getElementById('dataStatus').innerHTML = 
+                    `✅ ${APP.topics.length} konu güvenle saklanıyor<br>` +
+                    `Son kayıt: ${formatDate(lastDate)}<br>` +
+                    `Verileriniz ${days === 0 ? 'bugün' : days + ' gün önce'} güncellendi`;
+            } else {
+                document.getElementById('dataStatus').textContent = 'Henüz konu eklenmedi';
+            }
+        }
+
+        function checkBackupReminder() {
+            const lastBackup = localStorage.getItem('dusDis_lastBackup');
+            const weekMs = 7 * 24 * 60 * 60 * 1000;
+            
+            if (APP.topics.length > 0) {
+                if (!lastBackup || (Date.now() - parseInt(lastBackup)) > weekMs) {
+                    const days = lastBackup ? Math.floor((Date.now() - parseInt(lastBackup)) / (1000 * 60 * 60 * 24)) : 0;
+                    document.getElementById('backupDays').textContent = days;
+                    document.getElementById('backupCard').style.display = 'block';
+                }
+            }
+        }
+
+        function manualBackup() {
+            const data = { version: '1.0', date: new Date().toISOString(), topics: APP.topics };
+            const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
+            const link = document.createElement('a');
+            link.href = URL.createObjectURL(blob);
+            link.download = `dus_yedek_${new Date().toISOString().split('T')[0]}.json`;
+            link.click();
+            
+            localStorage.setItem('dusDis_lastBackup', Date.now());
+            document.getElementById('backupCard').style.display = 'none';
+            showToast('💾 Yedek indirildi!');
         }
 
         function render() {
             const list = document.getElementById('topicsList');
-            
             if (APP.topics.length === 0) {
-                list.innerHTML = '<div style="text-align: center; padding: 40px; color: #94a3b8;">Henüz konu eklemediniz 📚</div>';
+                list.innerHTML = '<p style="text-align: center; color: #94a3b8; padding: 40px;">Henüz konu eklemediniz 📚</p>';
                 return;
             }
 
             list.innerHTML = '';
-            
             APP.topics.forEach(topic => {
                 const card = document.createElement('div');
                 card.className = 'topic-card';
-                
                 card.innerHTML = `
                     <span class="badge badge-${topic.category}">${CATEGORIES[topic.category]}</span>
-                    <div class="topic-title">${topic.name}</div>
+                    <div style="font-weight: 700; margin-bottom: 10px;">${topic.name}</div>
                     ${topic.notes ? `<div style="background: white; padding: 10px; border-radius: 8px; margin: 10px 0; font-size: 0.9em;">📝 ${topic.notes}</div>` : ''}
-                    
                     <div class="dates-grid">
-                        ${topic.repetitions.map(rep => `
+                        ${topic.repetitions.map(r => `
                             <div class="date-item">
-                                <div style="font-weight: 600; margin-bottom: 3px;">📅 ${rep.day}. Gün</div>
-                                <div style="font-size: 0.85em; color: #64748b;">${formatDate(rep.date)}</div>
+                                <div style="font-weight: 600;">📅 ${r.day}. Gün</div>
+                                <div style="font-size: 0.85em; color: #64748b;">${formatDate(r.date)}</div>
                             </div>
                         `).join('')}
                     </div>
-                    
-                    <button class="btn" onclick="downloadICS(APP.topics.find(t => t.id === ${topic.id}))" style="margin-top: 10px;">
-                        📥 Tekrar İndir
+                    <button class="btn btn-primary btn-small" onclick="downloadICS(APP.topics.find(t => t.id === ${topic.id}))" style="width: 100%; margin-top: 10px;">
+                        📥 Takvim İndir
                     </button>
                 `;
-                
                 list.appendChild(card);
             });
         }
@@ -415,28 +504,33 @@
             toast.className = 'toast';
             toast.textContent = msg;
             document.body.appendChild(toast);
-            setTimeout(() => toast.remove(), 4000);
+            setTimeout(() => toast.remove(), 3000);
         }
 
         document.getElementById('topicForm').addEventListener('submit', (e) => {
             e.preventDefault();
-            
-            const name = document.getElementById('topicName').value;
-            const category = document.getElementById('category').value;
-            const notes = document.getElementById('notes').value;
-            
-            const topic = createTopic(name, category, notes);
+            const topic = createTopic(
+                document.getElementById('topicName').value,
+                document.getElementById('category').value,
+                document.getElementById('notes').value
+            );
             APP.topics.unshift(topic);
             saveData();
             render();
-            
             downloadICS(topic);
-            
             e.target.reset();
+            
+            // Her 10 konuda otomatik yedek
+            if (APP.topics.length % 10 === 0) {
+                setTimeout(manualBackup, 1000);
+            }
         });
 
         loadData();
         render();
+        
+        // Her sayfa yüklendiğinde veri durumunu göster
+        setInterval(updateDataStatus, 60000);
     </script>
 </body>
 </html>

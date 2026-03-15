@@ -1,0 +1,442 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="theme-color" content="#667eea">
+    <title>🦷 DUS Tekrar Sistemi</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 10px;
+            padding-bottom: 80px;
+        }
+
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+        }
+
+        .header {
+            background: white;
+            border-radius: 20px;
+            padding: 20px;
+            margin-bottom: 20px;
+            text-align: center;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+        }
+
+        .header h1 {
+            font-size: 1.8em;
+            color: #1e293b;
+            margin-bottom: 5px;
+        }
+
+        .card {
+            background: white;
+            border-radius: 16px;
+            padding: 20px;
+            margin-bottom: 15px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+        }
+
+        .card h2 {
+            font-size: 1.3em;
+            color: #1e293b;
+            margin-bottom: 15px;
+        }
+
+        .form-group {
+            margin-bottom: 15px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 6px;
+            color: #1e293b;
+            font-weight: 600;
+        }
+
+        input, select, textarea {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #e2e8f0;
+            border-radius: 10px;
+            font-size: 16px;
+            font-family: inherit;
+        }
+
+        input:focus, select:focus, textarea:focus {
+            outline: none;
+            border-color: #667eea;
+        }
+
+        .btn {
+            width: 100%;
+            padding: 16px;
+            border: none;
+            border-radius: 10px;
+            font-size: 17px;
+            font-weight: 700;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            color: white;
+            background: linear-gradient(135deg, #10b981, #059669);
+            box-shadow: 0 4px 15px rgba(16, 185, 129, 0.3);
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.02); }
+        }
+
+        .alert {
+            background: #dbeafe;
+            border: 2px solid #3b82f6;
+            border-radius: 12px;
+            padding: 15px;
+            margin: 15px 0;
+            color: #1e40af;
+            line-height: 1.6;
+        }
+
+        .topic-card {
+            background: #f8fafc;
+            border-radius: 12px;
+            padding: 15px;
+            margin-bottom: 12px;
+            border-left: 5px solid #667eea;
+        }
+
+        .topic-title {
+            font-weight: 700;
+            color: #1e293b;
+            margin-bottom: 10px;
+        }
+
+        .badge {
+            display: inline-block;
+            padding: 4px 10px;
+            border-radius: 20px;
+            font-size: 0.75em;
+            font-weight: 700;
+            color: white;
+            margin-bottom: 10px;
+        }
+
+        .badge-anatomi { background: #ef4444; }
+        .badge-fizyoloji { background: #f59e0b; }
+        .badge-biyokimya { background: #10b981; }
+        .badge-farmakoloji { background: #3b82f6; }
+        .badge-patoloji { background: #6366f1; }
+        .badge-mikrobiyoloji { background: #8b5cf6; }
+        .badge-cerrahi { background: #ec4899; }
+        .badge-restoratif { background: #14b8a6; }
+        .badge-ortodonti { background: #f97316; }
+        .badge-protez { background: #06b6d4; }
+        .badge-endodonti { background: #84cc16; }
+        .badge-pedodonti { background: #eab308; }
+        .badge-radyoloji { background: #64748b; }
+        .badge-periodontoloji { background: #dc2626; }
+
+        .dates-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 8px;
+            margin: 12px 0;
+        }
+
+        .date-item {
+            background: white;
+            padding: 10px;
+            border-radius: 8px;
+            font-size: 0.9em;
+        }
+
+        .toast {
+            position: fixed;
+            bottom: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: #1e293b;
+            color: white;
+            padding: 12px 20px;
+            border-radius: 10px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.3);
+            z-index: 10000;
+        }
+
+        @media (max-width: 600px) {
+            .dates-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🦷 DUS Tekrar Sistemi</h1>
+            <p style="color: #64748b;">Otomatik Takvim Entegrasyonu</p>
+        </div>
+
+        <div class="card">
+            <h2>➕ Yeni Konu Ekle</h2>
+            
+            <div class="alert">
+                <strong>📅 Nasıl Çalışır?</strong><br>
+                1. Konu bilgilerini girin<br>
+                2. "İndir ve Takvime Ekle" butonuna basın<br>
+                3. İndirilen dosyaya tıklayın<br>
+                4. Google Calendar otomatik açılır → "Kaydet" deyin<br>
+                5. 4 etkinlik (1-3-7-30 gün) takvime eklenir! 🎉
+            </div>
+
+            <form id="topicForm">
+                <div class="form-group">
+                    <label>📚 Ders</label>
+                    <select id="category" required>
+                        <option value="">Ders Seçin...</option>
+                        <option value="anatomi">🦴 Anatomi</option>
+                        <option value="fizyoloji">⚡ Fizyoloji-Histoloji</option>
+                        <option value="biyokimya">🧪 Biyokimya</option>
+                        <option value="farmakoloji">💊 Farmakoloji</option>
+                        <option value="patoloji">🔬 Patoloji</option>
+                        <option value="mikrobiyoloji">🦠 Mikrobiyoloji</option>
+                        <option value="cerrahi">✂️ Cerrahi</option>
+                        <option value="restoratif">🦷 Restoratif</option>
+                        <option value="ortodonti">😁 Ortodonti</option>
+                        <option value="protez">🦷 Protez</option>
+                        <option value="endodonti">🦷 Endodonti</option>
+                        <option value="pedodonti">👶 Pedodonti</option>
+                        <option value="radyoloji">📸 Radyoloji</option>
+                        <option value="periodontoloji">🦷 Periodontoloji</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label>📖 Konu</label>
+                    <input type="text" id="topicName" placeholder="Örn: Diş Anatomisi - Kesici Dişler" required>
+                </div>
+
+                <div class="form-group">
+                    <label>📝 Notlar</label>
+                    <textarea id="notes" rows="3" placeholder="Önemli notlar..."></textarea>
+                </div>
+
+                <button type="submit" class="btn">
+                    📥 İndir ve Google Takvime Ekle (4 Etkinlik)
+                </button>
+            </form>
+        </div>
+
+        <div class="card">
+            <h2>📚 Eklenen Konular</h2>
+            <div id="topicsList"></div>
+        </div>
+    </div>
+
+    <script>
+        const APP = {
+            topics: [],
+            SCHEDULE: [1, 3, 7, 30]
+        };
+
+        const CATEGORIES = {
+            'anatomi': '🦴 Anatomi',
+            'fizyoloji': '⚡ Fizyoloji-Histoloji',
+            'biyokimya': '🧪 Biyokimya',
+            'farmakoloji': '💊 Farmakoloji',
+            'patoloji': '🔬 Patoloji',
+            'mikrobiyoloji': '🦠 Mikrobiyoloji',
+            'cerrahi': '✂️ Cerrahi',
+            'restoratif': '🦷 Restoratif',
+            'ortodonti': '😁 Ortodonti',
+            'protez': '🦷 Protez',
+            'endodonti': '🦷 Endodonti',
+            'pedodonti': '👶 Pedodonti',
+            'radyoloji': '📸 Radyoloji',
+            'periodontoloji': '🦷 Periodontoloji'
+        };
+
+        function addDays(date, days) {
+            const result = new Date(date);
+            result.setDate(result.getDate() + days);
+            return result;
+        }
+
+        function formatDate(date) {
+            return new Date(date).toLocaleDateString('tr-TR', {
+                day: 'numeric',
+                month: 'long',
+                year: 'numeric'
+            });
+        }
+
+        function toICSDate(date) {
+            const d = new Date(date);
+            return d.toISOString().replace(/[-:]/g, '').split('.')[0] + 'Z';
+        }
+
+        function createICS(topic) {
+            let ics = 'BEGIN:VCALENDAR\r\n';
+            ics += 'VERSION:2.0\r\n';
+            ics += 'PRODID:-//DUS Tekrar Sistemi//TR\r\n';
+            ics += 'CALSCALE:GREGORIAN\r\n';
+            ics += 'METHOD:PUBLISH\r\n';
+            ics += `X-WR-CALNAME:${CATEGORIES[topic.category]}\r\n`;
+            ics += 'X-WR-TIMEZONE:Europe/Istanbul\r\n';
+
+            topic.repetitions.forEach((rep, index) => {
+                const startDate = new Date(rep.date);
+                const endDate = addDays(startDate, 0);
+                
+                ics += 'BEGIN:VEVENT\r\n';
+                ics += `UID:${topic.id}-${rep.day}@dustekrar.com\r\n`;
+                ics += `DTSTAMP:${toICSDate(new Date())}\r\n`;
+                ics += `DTSTART:${toICSDate(startDate)}\r\n`;
+                ics += `DTEND:${toICSDate(endDate)}\r\n`;
+                ics += `SUMMARY:${CATEGORIES[topic.category]} - ${topic.name} (${rep.day}. gün)\r\n`;
+                
+                const description = `🦷 DUS Diş Hekimliği - ${rep.day}. Gün Tekrarı\\n\\n` +
+                                  `📚 Ders: ${CATEGORIES[topic.category]}\\n` +
+                                  `📖 Konu: ${topic.name}\\n` +
+                                  `📅 ${rep.day}. Gün (1-3-7-30 Sistemi)\\n\\n` +
+                                  `${topic.notes ? `📝 Notlar: ${topic.notes}\\n\\n` : ''}` +
+                                  `Tüm Tekrarlar:\\n` +
+                                  `${topic.repetitions.map(r => `• ${r.day}. gün: ${formatDate(r.date)}`).join('\\n')}`;
+                
+                ics += `DESCRIPTION:${description}\r\n`;
+                ics += `LOCATION:DUS Çalışma\r\n`;
+                ics += 'STATUS:CONFIRMED\r\n';
+                ics += 'BEGIN:VALARM\r\n';
+                ics += 'TRIGGER:-PT2H\r\n';
+                ics += 'ACTION:DISPLAY\r\n';
+                ics += `DESCRIPTION:${topic.name} - ${rep.day}. gün tekrarı 2 saat sonra\r\n`;
+                ics += 'END:VALARM\r\n';
+                ics += 'BEGIN:VALARM\r\n';
+                ics += 'TRIGGER:-PT30M\r\n';
+                ics += 'ACTION:DISPLAY\r\n';
+                ics += `DESCRIPTION:${topic.name} - ${rep.day}. gün tekrarı 30 dakika sonra\r\n`;
+                ics += 'END:VALARM\r\n';
+                ics += 'END:VEVENT\r\n';
+            });
+
+            ics += 'END:VCALENDAR\r\n';
+            return ics;
+        }
+
+        function downloadICS(topic) {
+            const ics = createICS(topic);
+            const blob = new Blob([ics], { type: 'text/calendar;charset=utf-8' });
+            const link = document.createElement('a');
+            link.href = URL.createObjectURL(blob);
+            link.download = `${topic.name.replace(/[^a-z0-9]/gi, '_').toLowerCase()}.ics`;
+            link.click();
+            
+            showToast('📥 İndirildi! Dosyaya tıklayın, Google Calendar açılacak!');
+        }
+
+        function createTopic(name, category, notes) {
+            const now = new Date();
+            return {
+                id: Date.now(),
+                name,
+                category,
+                notes,
+                createdAt: now.toISOString(),
+                repetitions: APP.SCHEDULE.map(days => ({
+                    day: days,
+                    date: addDays(now, days).toISOString()
+                }))
+            };
+        }
+
+        function saveData() {
+            localStorage.setItem('dusDis', JSON.stringify(APP.topics));
+        }
+
+        function loadData() {
+            const saved = localStorage.getItem('dusDis');
+            if (saved) APP.topics = JSON.parse(saved);
+        }
+
+        function render() {
+            const list = document.getElementById('topicsList');
+            
+            if (APP.topics.length === 0) {
+                list.innerHTML = '<div style="text-align: center; padding: 40px; color: #94a3b8;">Henüz konu eklemediniz 📚</div>';
+                return;
+            }
+
+            list.innerHTML = '';
+            
+            APP.topics.forEach(topic => {
+                const card = document.createElement('div');
+                card.className = 'topic-card';
+                
+                card.innerHTML = `
+                    <span class="badge badge-${topic.category}">${CATEGORIES[topic.category]}</span>
+                    <div class="topic-title">${topic.name}</div>
+                    ${topic.notes ? `<div style="background: white; padding: 10px; border-radius: 8px; margin: 10px 0; font-size: 0.9em;">📝 ${topic.notes}</div>` : ''}
+                    
+                    <div class="dates-grid">
+                        ${topic.repetitions.map(rep => `
+                            <div class="date-item">
+                                <div style="font-weight: 600; margin-bottom: 3px;">📅 ${rep.day}. Gün</div>
+                                <div style="font-size: 0.85em; color: #64748b;">${formatDate(rep.date)}</div>
+                            </div>
+                        `).join('')}
+                    </div>
+                    
+                    <button class="btn" onclick="downloadICS(APP.topics.find(t => t.id === ${topic.id}))" style="margin-top: 10px;">
+                        📥 Tekrar İndir
+                    </button>
+                `;
+                
+                list.appendChild(card);
+            });
+        }
+
+        function showToast(msg) {
+            const toast = document.createElement('div');
+            toast.className = 'toast';
+            toast.textContent = msg;
+            document.body.appendChild(toast);
+            setTimeout(() => toast.remove(), 4000);
+        }
+
+        document.getElementById('topicForm').addEventListener('submit', (e) => {
+            e.preventDefault();
+            
+            const name = document.getElementById('topicName').value;
+            const category = document.getElementById('category').value;
+            const notes = document.getElementById('notes').value;
+            
+            const topic = createTopic(name, category, notes);
+            APP.topics.unshift(topic);
+            saveData();
+            render();
+            
+            downloadICS(topic);
+            
+            e.target.reset();
+        });
+
+        loadData();
+        render();
+    </script>
+</body>
+</html>
